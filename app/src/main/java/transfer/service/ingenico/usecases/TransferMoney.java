@@ -37,8 +37,8 @@ public class TransferMoney {
                 filter(account -> account.getCurrentBalance().compareTo(transferValue) < 0).
                 orElseThrow(() -> new InsufficientBalanceException("Insuficient Balance"));
 
-        senderAccount.getCurrentBalance().subtract(transferValue);
-        recipientAccount.getCurrentBalance().add(transferValue);
+        senderAccount.setCurrentBalance(senderAccount.getCurrentBalance().subtract(transferValue));
+        recipientAccount.setCurrentBalance(recipientAccount.getCurrentBalance().add(transferValue));
 
         transferGateway.save(Transfer.builder().
                 senderAccountId(senderAccount).
