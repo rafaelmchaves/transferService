@@ -1,8 +1,7 @@
 package transfer.service.ingenico.gateway.http.json;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +10,9 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountRequest implements Serializable {
 
     private static final long serialVersionUID = 4805751843390298375L;

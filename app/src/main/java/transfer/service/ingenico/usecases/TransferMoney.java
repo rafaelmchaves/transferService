@@ -34,8 +34,8 @@ public class TransferMoney {
                 orElseThrow(() -> new NotFoundAccountException("Recipient account not found"));
 
         Optional.ofNullable(senderAccount).
-                filter(account -> account.getCurrentBalance().compareTo(transferValue) < 0).
-                orElseThrow(() -> new InsufficientBalanceException("Insuficient Balance"));
+                filter(account -> account.getCurrentBalance().compareTo(transferValue) >= 0).
+                orElseThrow(() -> new InsufficientBalanceException("Insufficient Balance"));
 
         senderAccount.setCurrentBalance(senderAccount.getCurrentBalance().subtract(transferValue));
         recipientAccount.setCurrentBalance(recipientAccount.getCurrentBalance().add(transferValue));

@@ -6,19 +6,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import transfer.service.ingenico.domains.Account;
+import transfer.service.ingenico.domains.Exceptions.InsufficientBalanceException;
+import transfer.service.ingenico.domains.Exceptions.NotFoundAccountException;
 import transfer.service.ingenico.gateway.http.json.AccountRequest;
+import transfer.service.ingenico.gateway.http.json.TransferMoneyRequest;
 import transfer.service.ingenico.usecases.CreateAccount;
 import transfer.service.ingenico.usecases.TransferMoney;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/v1/account")
 @Api(value = "/api/v1/account", description = "Rest API for account", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountController {
-
 
     private CreateAccount createAccount;
     private TransferMoney transferMoney;
@@ -33,6 +33,7 @@ public class AccountController {
     @ApiOperation(value = "Create a new account")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Account created"),
+            @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 500, message = "Internal Server Error")})
     // @formatter:on
     @RequestMapping(method = RequestMethod.POST)
@@ -47,8 +48,10 @@ public class AccountController {
     // @formatter:off
     @ApiOperation(value = "Transfer money from an account to other account")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Account created"),
-            @ApiResponse(code = 404, message = "Some account don't exist"),
+            @ApiResponse(code = 204, message = "Transfer done"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Some Account doesn't exist"),
+            @ApiResponse(code = 422, message = "Sender have an insufficient balance to transfer"),
             @ApiResponse(code = 500, message = "Internal Server Error")})
     @ApiImplicitParams({
             @ApiImplicitParam(name = "senderId", value = "Sender account number", required = true, dataType = "Long", paramType = "Query"),
@@ -58,9 +61,7 @@ public class AccountController {
     // @formatter:on
     @RequestMapping(method = RequestMethod.PATCH)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void transferMoney(@NotNull(message = "{msg.validation.senderId.null}") Long senderId,
-                              @NotNull(message = "{msg.validation.recipientId.null}") Long recipientId,
-                              @NotNull(message = "{msg.validation.transferValue.null}") BigDecimal transferValue) {
-        transferMoney.execute(senderId,recipientId, transferValue);
+    public void transferMoney(@RequestBody @Valid TransferMoneyRequest transferMoneyRequest) throws NotFoundAccountException, InsufficientBalanceException {
+        transferMoney.execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
     }
 }

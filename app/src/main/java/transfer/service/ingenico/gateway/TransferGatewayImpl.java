@@ -1,9 +1,8 @@
-package transfer.service.ingenico.gateway.h2;
+package transfer.service.ingenico.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import transfer.service.ingenico.domains.Transfer;
-import transfer.service.ingenico.gateway.TransferGateway;
 
 @Component
 public class TransferGatewayImpl implements TransferGateway {
