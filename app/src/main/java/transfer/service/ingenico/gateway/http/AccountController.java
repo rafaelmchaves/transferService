@@ -61,7 +61,7 @@ public class AccountController {
     // @formatter:on
     @RequestMapping(method = RequestMethod.PATCH)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void transferMoney(@RequestBody @Valid TransferMoneyRequest transferMoneyRequest) throws NotFoundAccountException, InsufficientBalanceException {
+    public synchronized void transferMoney(@RequestBody @Valid TransferMoneyRequest transferMoneyRequest) throws NotFoundAccountException, InsufficientBalanceException {
         transferMoney.execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
     }
 }

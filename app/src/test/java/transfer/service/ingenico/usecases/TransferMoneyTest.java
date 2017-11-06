@@ -39,7 +39,7 @@ public class TransferMoneyTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void transferMoneyWithSuccess() throws NotFoundAccountException, InsufficientBalanceException {
+    public void transferMoneyWithSuccess() throws NotFoundAccountException, InsufficientBalanceException, InterruptedException {
         //given a sender account number
         Long senderAccountId = 1l;
         //and a recipient account number
@@ -69,7 +69,7 @@ public class TransferMoneyTest {
     }
 
     @Test
-    public void transferMoneyNonexistentSenderAccount() throws NotFoundAccountException, InsufficientBalanceException {
+    public void transferMoneyNonexistentSenderAccount() throws NotFoundAccountException, InsufficientBalanceException, InterruptedException {
         exception.expect(NotFoundAccountException.class);
         exception.expectMessage("Sender account not found");
 
@@ -95,7 +95,7 @@ public class TransferMoneyTest {
     }
 
     @Test
-    public void transferMoneyNonexistentRecipientAccount() throws NotFoundAccountException, InsufficientBalanceException {
+    public void transferMoneyNonexistentRecipientAccount() throws NotFoundAccountException, InsufficientBalanceException, InterruptedException {
         exception.expect(NotFoundAccountException.class);
         exception.expectMessage("Recipient account not found");
 
@@ -120,7 +120,7 @@ public class TransferMoneyTest {
     }
 
     @Test
-    public void transferMoneyInsufficientBalance() throws NotFoundAccountException, InsufficientBalanceException {
+    public void transferMoneyInsufficientBalance() throws NotFoundAccountException, InsufficientBalanceException, InterruptedException {
         exception.expect(InsufficientBalanceException.class);
         exception.expectMessage("Insufficient Balance");
 

@@ -1,8 +1,6 @@
 package transfer.service.ingenico.domains;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +12,8 @@ import java.util.Calendar;
 @Entity
 @Table(name = "transfer")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Transfer implements Serializable {
 
     private static final long serialVersionUID = 632380474910793338L;

@@ -27,6 +27,7 @@ public class TransferMoney {
 
     @Transactional
     public void execute(Long senderId, Long recipientId, BigDecimal transferValue) throws NotFoundAccountException, InsufficientBalanceException {
+
         Account senderAccount =  Optional.ofNullable(accountGateway.find(senderId)).
                 orElseThrow(() -> new NotFoundAccountException("Sender account not found"));
 
