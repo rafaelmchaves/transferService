@@ -49,6 +49,6 @@ Include queues using AMQP.
 
 Remove syncronized of controller method.
 
-Controller should call a class that sends a message to the rabbit. Some listener listen this message and calculate. This way, there will not problems with isolation and performance.
+Controller should call a class that sends a message to a queue. Some listener class listens this message and calls other use case resposible for the calculate. This way, there will not problems with isolation and performance.
 
 
