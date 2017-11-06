@@ -1,5 +1,7 @@
 # TRANSFER SERVICE
 
+Implementation of a transfer service.
+
 # Springboot 
 This is a spring boot project. Advantages:
 - Embedded server
@@ -13,11 +15,8 @@ https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
 
 - Package usecases:
  -- Every class in this package use Command pattern with a execute method.
- 
  -- The name of class represents an action.
- 
  -- This package shows everything that this project doing.
- 
  -- Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
 
 - Package gateway
@@ -34,14 +33,22 @@ Every domain tht represents a business is here.
 - Lombok: library that helps us to reduce code.
 - Swagger: Documentation about RestAPI. 
 
-# run application
+# Run application
 
 This is a spring boot application. Just run!
 https://spring.io/guides/gs/spring-boot/
 
-# swagger
+# Swagger
 
 Every infomations about APIs
 http://localhost:8080/swagger-ui.html#/account-controller
+
+# Future - limitations
+
+Include queues using AMQP.
+
+Remove syncronized of controller method.
+
+Controller should call a class that sends a message to the rabbit. Some listener listen this message and calculate. This way, there will not problems with isolation and performance.
 
 
