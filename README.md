@@ -8,9 +8,9 @@ This is a spring boot project. Advantages:
 - Remove boiler plate code.
 - Profiling
 
-# Clean architeure
+# Clean architeture
 
-The organization of the project is in accordance with the Clean Architeure. More about it:
+The organization of the project is in accordance with the Clean Architeture. More about it:
 https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
 
 - Package usecases:
