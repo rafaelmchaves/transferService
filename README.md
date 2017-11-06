@@ -11,13 +11,10 @@ The organization of the project is in accordance with the Clean Architeure. More
 https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
 
 - Package usecases:
- Every class in this package use Command pattern with a execute method.
- 
- The name of class represents an action.
- 
- This package shows everything that this project doing.
- 
- Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
+ -- Every class in this package use Command pattern with a execute method.
+ -- The name of class represents an action.
+ -- This package shows everything that this project doing.
+ -- Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
 
 - Package gateway
 Classes in this package access database and others boards.
@@ -37,4 +34,6 @@ This is a spring boot application. Just run!
 https://spring.io/guides/gs/spring-boot/
 
 # swagger
+http://localhost:8080/swagger-ui.html#/account-controller
+Every infomations about APIs
 
