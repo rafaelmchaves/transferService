@@ -45,10 +45,6 @@ http://localhost:8080/swagger-ui.html#/account-controller
 
 # Future - limitations
 
-Include queues using AMQP.
-
-Remove syncronized of controller method.
-
-Controller should call a class that sends a message to a queue. Some listener class listens this message and calls other use case resposible for the calculate. This way, there will not problems with isolation and performance.
+The AccountController.transferMoney is syncronized and it's can be a big problem, because others applications will be waiting response of our microservice. So, we need to remove syncronized of controller method and our controller should call a class that sends the transfer request message to a queue. That way, the response of mircroservice will be faster and the processing will occour in other moment. We need to create a listener class that listens this message and calls other use case resposible for the calculate this transfer request. This way, there will not problems with isolation and performance.
 
 
