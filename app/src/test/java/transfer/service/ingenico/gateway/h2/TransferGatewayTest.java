@@ -8,10 +8,11 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import transfer.service.ingenico.domains.Account;
 import transfer.service.ingenico.domains.Transfer;
-import transfer.service.ingenico.gateway.TransferGatewayImpl;
-import transfer.service.ingenico.gateway.TransferRepository;
 
 import java.math.BigDecimal;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransferGatewayTest {
@@ -39,6 +40,6 @@ public class TransferGatewayTest {
         transferGateway.save(transfer);
 
         //Then I verify if save method was invoked
-        Mockito.verify(transferRepository).save(transfer);
+        verify(transferRepository, times(1)).save(transfer);
     }
 }

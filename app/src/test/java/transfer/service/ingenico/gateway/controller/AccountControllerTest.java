@@ -18,6 +18,7 @@ import transfer.service.ingenico.gateway.controller.conf.AbstractHttpTest;
 import transfer.service.ingenico.gateway.http.AccountController;
 import transfer.service.ingenico.gateway.http.json.AccountRequest;
 import transfer.service.ingenico.gateway.http.json.TransferMoneyRequest;
+import transfer.service.ingenico.gateway.rabbitmq.SenderTransferGatewayImpl;
 import transfer.service.ingenico.usecases.CreateAccount;
 import transfer.service.ingenico.usecases.TransferMoney;
 
@@ -38,6 +39,9 @@ public class AccountControllerTest extends AbstractHttpTest {
 
     @MockBean
     private TransferMoney transferMoney;
+
+    @MockBean
+    private SenderTransferGatewayImpl transferServiceGateway;
 
     private MockMvc mockMvc;
 
@@ -132,7 +136,7 @@ public class AccountControllerTest extends AbstractHttpTest {
 
         // Then the request must return a status 201
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(204));
-        verify(transferMoney, times(1)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(1)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 
@@ -151,7 +155,7 @@ public class AccountControllerTest extends AbstractHttpTest {
 
         // Then the request must return a status 400
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(400));
-        verify(transferMoney, times(0)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(0)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 
@@ -170,7 +174,7 @@ public class AccountControllerTest extends AbstractHttpTest {
 
         // Then the request must return a status 400
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(400));
-        verify(transferMoney, times(0)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(0)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 
@@ -189,7 +193,7 @@ public class AccountControllerTest extends AbstractHttpTest {
 
         // Then the request must return a status 400
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(400));
-        verify(transferMoney, times(0)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(0)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 
@@ -205,35 +209,13 @@ public class AccountControllerTest extends AbstractHttpTest {
         String json = mapper.writeValueAsString(transferMoneyRequest);
 
         //and sender account is not found
-        doThrow(new NotFoundAccountException("Sender Account not found")).when(transferMoney).execute(any(), any(), any());
+        doThrow(new NotFoundAccountException("Sender Account not found")).when(transferServiceGateway).send(any(), any(), any());
         // When I try transfer money
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(API_END_POINT).contentType(MediaType.APPLICATION_JSON).content(json)).andReturn();
 
         // Then the request must return a status 404
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(404));
-        verify(transferMoney, times(1)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
-
-    }
-
-    @Test
-    public void transferMoneyInsufficientBalance() throws Exception {
-
-        // Given a transfer money request
-        TransferMoneyRequest transferMoneyRequest = TransferMoneyRequest.builder().
-                senderId(1l).
-                recipientId(2l).
-                transferValue(BigDecimal.TEN).
-                build();
-        String json = mapper.writeValueAsString(transferMoneyRequest);
-
-        //and send balance is insufficient to transfer money
-        doThrow(new InsufficientBalanceException("Insufficient Balance")).when(transferMoney).execute(any(), any(), any());
-        // When I try transfer money
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(API_END_POINT).contentType(MediaType.APPLICATION_JSON).content(json)).andReturn();
-
-        // Then the request must return a status 522
-        Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(422));
-        verify(transferMoney, times(1)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(1)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 
@@ -249,13 +231,13 @@ public class AccountControllerTest extends AbstractHttpTest {
         String json = mapper.writeValueAsString(transferMoneyRequest);
 
         //and send balance is insufficient to transfer money
-        doThrow(new RuntimeException("Internal Server Error")).when(transferMoney).execute(any(), any(), any());
+        doThrow(new RuntimeException("Internal Server Error")).when(transferServiceGateway).send(any(), any(), any());
         // When I try transfer money
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(API_END_POINT).contentType(MediaType.APPLICATION_JSON).content(json)).andReturn();
 
         // Then the request must return a status 522
         Assert.assertThat(mvcResult.getResponse().getStatus(), equalTo(500));
-        verify(transferMoney, times(1)).execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        verify(transferServiceGateway, times(1)).send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
 
     }
 }

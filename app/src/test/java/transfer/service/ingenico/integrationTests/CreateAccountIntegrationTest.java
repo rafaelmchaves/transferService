@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import transfer.service.ingenico.domains.Account;
-import transfer.service.ingenico.gateway.AccountRepository;
+import transfer.service.ingenico.gateway.h2.AccountRepository;
+import transfer.service.ingenico.gateway.h2.TransferRepository;
 import transfer.service.ingenico.gateway.http.json.AccountRequest;
 
 import java.math.BigDecimal;
@@ -28,10 +29,14 @@ public class CreateAccountIntegrationTest {
     private AccountRepository accountRepository;
 
     @Autowired
+    private TransferRepository transferRepository;
+
+    @Autowired
     private TestRestTemplate restTemplate;
 
     @Before
     public void clean() {
+        transferRepository.deleteAll();
         accountRepository.deleteAll();
     }
 

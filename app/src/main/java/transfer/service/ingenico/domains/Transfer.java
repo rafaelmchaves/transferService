@@ -35,4 +35,7 @@ public class Transfer implements Serializable {
     @Column(name = "value")
     private BigDecimal value;
 
+    @Column(name = "status")
+    private TransferStatus status;
+
 }

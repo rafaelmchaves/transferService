@@ -7,6 +7,7 @@ import transfer.service.ingenico.domains.Account;
 import transfer.service.ingenico.domains.Exceptions.InsufficientBalanceException;
 import transfer.service.ingenico.domains.Exceptions.NotFoundAccountException;
 import transfer.service.ingenico.domains.Transfer;
+import transfer.service.ingenico.domains.TransferStatus;
 import transfer.service.ingenico.gateway.AccountGateway;
 import transfer.service.ingenico.gateway.TransferGateway;
 
@@ -26,29 +27,51 @@ public class TransferMoney {
     }
 
     @Transactional
-    public void execute(Long senderId, Long recipientId, BigDecimal transferValue) throws NotFoundAccountException, InsufficientBalanceException {
+    public void execute(Long transferId) throws NotFoundAccountException, InsufficientBalanceException {
 
-        Account senderAccount =  Optional.ofNullable(accountGateway.find(senderId)).
-                orElseThrow(() -> new NotFoundAccountException("Sender account not found"));
+        Transfer transfer = transferGateway.find(transferId);
 
-        Account recipientAccount = Optional.ofNullable(accountGateway.find(recipientId)).
-                orElseThrow(() -> new NotFoundAccountException("Recipient account not found"));
+        Account senderAccount =  Optional.ofNullable(accountGateway.find(transfer.getSenderAccountId().getId())).
+                orElseThrow(() ->
+                {
+                    transfer.setStatus(TransferStatus.ACCOUNT_NOT_FOUND);
+                    transferGateway.save(transfer);
+                    return new NotFoundAccountException("Sender account not found");
+                });
 
-        Optional.ofNullable(senderAccount).
-                filter(account -> account.getCurrentBalance().compareTo(transferValue) >= 0).
-                orElseThrow(() -> new InsufficientBalanceException("Insufficient Balance"));
+        Account recipientAccount = Optional.ofNullable(accountGateway.find(transfer.getRecipientAccountId().getId())).
+                orElseThrow(() ->
+                {
+                    transfer.setStatus(TransferStatus.ACCOUNT_NOT_FOUND);
+                    transferGateway.save(transfer);
+                    return new NotFoundAccountException("Recipient account not found");
+                });
 
-        senderAccount.setCurrentBalance(senderAccount.getCurrentBalance().subtract(transferValue));
-        recipientAccount.setCurrentBalance(recipientAccount.getCurrentBalance().add(transferValue));
+        verifyAccountsBalance(transfer, senderAccount);
 
-        transferGateway.save(Transfer.builder().
-                senderAccountId(senderAccount).
-                recipientAccountId(recipientAccount).
-                value(transferValue).
-                build());
+        calculateNewBalance(transfer, senderAccount, recipientAccount);
+
+        transfer.setStatus(TransferStatus.SUCCESS);
+        transferGateway.save(transfer);
 
         accountGateway.saveUpdate(recipientAccount);
         accountGateway.saveUpdate(senderAccount);
 
+    }
+
+    private void verifyAccountsBalance(Transfer transfer, Account senderAccount) throws InsufficientBalanceException {
+        Optional.ofNullable(senderAccount).
+                filter(account -> account.getCurrentBalance().compareTo(transfer.getValue()) >= 0).
+                orElseThrow(() ->
+                {
+                    transfer.setStatus(TransferStatus.INSUFFICIENT_BALANCE);
+                    transferGateway.save(transfer);
+                   return new InsufficientBalanceException("Sender have an insufficient balance to transfer");
+                });
+    }
+
+    private void calculateNewBalance(Transfer transfer, Account senderAccount, Account recipientAccount) {
+        senderAccount.setCurrentBalance(senderAccount.getCurrentBalance().subtract(transfer.getValue()));
+        recipientAccount.setCurrentBalance(recipientAccount.getCurrentBalance().add(transfer.getValue()));
     }
 }

@@ -1,8 +1,9 @@
-package transfer.service.ingenico.gateway;
+package transfer.service.ingenico.gateway.h2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import transfer.service.ingenico.domains.Account;
+import transfer.service.ingenico.gateway.AccountGateway;
 
 @Component
 public class AccountGatewayImpl implements AccountGateway {

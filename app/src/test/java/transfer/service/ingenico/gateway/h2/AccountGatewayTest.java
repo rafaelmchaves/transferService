@@ -4,13 +4,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import transfer.service.ingenico.domains.Account;
-import transfer.service.ingenico.gateway.AccountGatewayImpl;
-import transfer.service.ingenico.gateway.AccountRepository;
 
 import java.math.BigDecimal;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountGatewayTest {
@@ -30,7 +30,7 @@ public class AccountGatewayTest {
         accountGateway.saveUpdate(account);
 
         //Then I verify if save method was invoked
-        Mockito.verify(accountRepository).save(account);
+        verify(accountRepository, times(1)).save(account);
     }
 
     @Test
@@ -42,6 +42,6 @@ public class AccountGatewayTest {
         accountGateway.find(accountId);
 
         //Then I verify if find method was invoked
-        Mockito.verify(accountRepository).findOne(accountId);
+        verify(accountRepository, times(1)).findOne(accountId);
     }
 }

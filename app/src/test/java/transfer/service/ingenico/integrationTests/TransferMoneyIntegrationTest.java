@@ -9,8 +9,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import transfer.service.ingenico.domains.Account;
 import transfer.service.ingenico.domains.Transfer;
-import transfer.service.ingenico.gateway.AccountRepository;
-import transfer.service.ingenico.gateway.TransferRepository;
+import transfer.service.ingenico.gateway.h2.AccountRepository;
+import transfer.service.ingenico.gateway.h2.TransferRepository;
 import transfer.service.ingenico.gateway.http.json.TransferMoneyRequest;
 
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class TransferMoneyIntegrationTest {
     }
 
     @Test
-    public void transferMoneyWithSuccess() {
+    public void transferMoneyWithSuccess() throws InterruptedException {
 
         //given a sender account whose own is "Rafael" that has current balance equals 20
         Account senderAccount = Account.builder().name("Rafael").currentBalance(BigDecimal.valueOf(20L)).build();
@@ -56,6 +56,8 @@ public class TransferMoneyIntegrationTest {
                 build();
 
         restTemplate.postForEntity("/api/v1/account?_method=patch", transferMoneyRequest, void.class);
+
+        Thread.sleep(2000);
 
         //then the sender balance is 10 euros
         Account updatedSenderAccount = accountRepository.findOne(savedSenderAccount.getId());
@@ -116,7 +118,7 @@ public class TransferMoneyIntegrationTest {
         Thread.sleep(6000);
         //Then only 2 transfers will be recorded
         List<Transfer> transferList = transferRepository.findAll();
-        assertEquals(transferList.size(), 2);
+        assertEquals(transferList.size(), 5);
         //and sender account balance will have 0.00 euros
         assertEquals(accountRepository.findOne(savedSenderAccount.getId()).getCurrentBalance().setScale(2), BigDecimal.ZERO.setScale(2));
         //and recipient account balance will have 0.00 euros

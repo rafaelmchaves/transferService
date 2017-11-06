@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import transfer.service.ingenico.domains.Account;
 import transfer.service.ingenico.domains.Exceptions.InsufficientBalanceException;
 import transfer.service.ingenico.domains.Exceptions.NotFoundAccountException;
+import transfer.service.ingenico.gateway.rabbitmq.SenderTransferGatewayImpl;
 import transfer.service.ingenico.gateway.http.json.AccountRequest;
 import transfer.service.ingenico.gateway.http.json.TransferMoneyRequest;
 import transfer.service.ingenico.usecases.CreateAccount;
@@ -22,11 +23,13 @@ public class AccountController {
 
     private CreateAccount createAccount;
     private TransferMoney transferMoney;
+    private SenderTransferGatewayImpl transferServiceGateway;
 
     @Autowired
-    public AccountController(CreateAccount createAccount, TransferMoney transferMoney) {
+    public AccountController(CreateAccount createAccount, TransferMoney transferMoney, SenderTransferGatewayImpl transferServiceGateway) {
         this.createAccount = createAccount;
         this.transferMoney = transferMoney;
+        this.transferServiceGateway = transferServiceGateway;
     }
 
     // @formatter:off
@@ -51,17 +54,12 @@ public class AccountController {
             @ApiResponse(code = 204, message = "Transfer done"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Some Account doesn't exist"),
-            @ApiResponse(code = 422, message = "Sender have an insufficient balance to transfer"),
             @ApiResponse(code = 500, message = "Internal Server Error")})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "senderId", value = "Sender account number", required = true, dataType = "Long", paramType = "Query"),
-            @ApiImplicitParam(name = "recipientId", value = "Recipient account number", required = true, dataType = "Long", paramType = "Query"),
-            @ApiImplicitParam(name = "transferValue", value = "Transfer value. This value must to be positive", required = true, dataType = "BigDecimal", paramType = "Query")
-    })
     // @formatter:on
     @RequestMapping(method = RequestMethod.PATCH)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public synchronized void transferMoney(@RequestBody @Valid TransferMoneyRequest transferMoneyRequest) throws NotFoundAccountException, InsufficientBalanceException {
-        transferMoney.execute(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
+        transferServiceGateway.send(transferMoneyRequest.getSenderId(), transferMoneyRequest.getRecipientId(), transferMoneyRequest.getTransferValue());
     }
+
 }
