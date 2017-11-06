@@ -22,7 +22,6 @@ https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
   This package shows everything that this project doing.
   
   Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
- 
 
 - Package gateway:
 
@@ -40,8 +39,14 @@ Every domain tht represents a business is here.
 - Lombok: library that helps us to reduce code.
 - Swagger: generate documentation about RestAPI of application.
 - Rest: Spring framework Rest library
+- RabbitMQ:  is an amazing open source message broker software that implements the Advanced Message Queuing Protocol (AMQP).
+- Docker: Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications, whether on laptops, data center VMs, or the cloud.
 
 # Run application
+
+Run RabbitMQ. In project, there is a rabbitMQ in docker file.
+Just run the following command in docker field:
+sudo docker-compose up
 
 This is a spring boot application. Just run!
 https://spring.io/guides/gs/spring-boot/
@@ -58,10 +63,11 @@ Console: http://localhost:8080/h2/
 # Running integration tests
 
 Just running tests. The application need to stopped to running the tests.
+RabbitMQ need to be running while tests are running.
+
+One of tests show us that the application is isolated.
 
 # Future - limitations
-
-The AccountController.transferMoney is syncronized and it's can be a big problem, because others applications will be waiting response of our microservice. So, we need to remove syncronized of controller method and our controller should call a class that sends the transfer request message to a queue. That way, the response of mircroservice will be faster and the processing will occour in other moment. We need to create a listener class that listens this message and calls other use case resposible for the calculate this transfer request. This way, there will not problems with isolation and performance.
 
 Create more integration tests scenarius.
 
