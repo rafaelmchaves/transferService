@@ -42,13 +42,21 @@ Every domain tht represents a business is here.
 - RabbitMQ:  is an amazing open source message broker software that implements the Advanced Message Queuing Protocol (AMQP).
 - Docker: Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications, whether on laptops, data center VMs, or the cloud.
 
-# Run application
+# RabbitMQ and Docker
+In project, there is a rabbitMQ in docker file.
 
-Run RabbitMQ. In project, there is a rabbitMQ in docker file.
 Just run the following command in docker field:
 sudo docker-compose up
 
-This is a spring boot application. Just run!
+user rabbit: guest
+
+password rabbit:quest
+
+# Run application
+
+Run up RabbitMQ.
+
+This is a spring boot application. Just run up it!
 https://spring.io/guides/gs/spring-boot/
 
 # Swagger
