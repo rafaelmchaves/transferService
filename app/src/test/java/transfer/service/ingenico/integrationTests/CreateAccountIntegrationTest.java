@@ -1,5 +1,6 @@
 package transfer.service.ingenico.integrationTests;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class CreateAccountIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Before
+    public void clean() {
+        accountRepository.deleteAll();
+    }
 
     @Test
     public void createClient() {

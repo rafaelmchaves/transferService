@@ -1,6 +1,7 @@
 package transfer.service.ingenico.domains;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,8 +34,5 @@ public class Transfer implements Serializable {
 
     @Column(name = "value")
     private BigDecimal value;
-
-    @Column(name = "date")
-    private Calendar date;
 
 }
