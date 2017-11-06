@@ -78,5 +78,7 @@ One of tests show us that the application is isolated.
 # Future - limitations
 
 Create more integration tests scenarius.
+There are not profiles in this project. In the future, we can create profiles to production, to integration tests etc.
+
 
 
