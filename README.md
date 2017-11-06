@@ -15,15 +15,21 @@ https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
 
 - Package usecases:
 
- * Every class in this package use Command pattern with a execute method.
- * The name of class represents an action.
- * This package shows everything that this project doing.
- * Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
+  Every class in this package use Command pattern with a execute method.
+  
+  The name of class represents an action.
+  
+  This package shows everything that this project doing.
+  
+  Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
+ 
 
-- Package gateway
+- Package gateway:
+
 Classes in this package access database and others boards.
 
 - Package domains:
+
 Every domain tht represents a business is here.
 
 # Technologies:
