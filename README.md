@@ -21,7 +21,7 @@ https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
   
   This package shows everything that this project doing.
   
-  Don't can use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
+  Can't use tecnologies in this class, ex: Mongo, RabbitMQ etc. Only pure java libraries.
 
 - Package gateway:
 
@@ -61,7 +61,7 @@ https://spring.io/guides/gs/spring-boot/
 
 # Swagger
 
-All infomation about APIs
+All infomations about APIs
 http://localhost:8080/swagger-ui.html#/account-controller
 
 # H2
